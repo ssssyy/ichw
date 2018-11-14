@@ -1,1 +1,71 @@
-1
+import turtle
+import math
+#这是一段要多复杂有多复杂的代码，原因是我定义的函数总是出现变量名字错误……所以我没办法定义函数并引用……
+
+a=turtle.Turtle() #a为太阳
+a.color("yellow")
+a.penup()
+a.goto(60,0)
+a.dot(20,"yellow")
+
+s=turtle.Turtle() #s为水星
+s.shape("circle")
+s.pencolor("red")
+s.color("red")
+s.speed(0)
+s.penup()
+s.goto(100,0)
+s.pendown()
+
+j=turtle.Turtle() #j为金星
+j.shape("circle")
+j.pencolor("blue")
+j.color("blue")
+j.speed(0)
+j.penup()
+j.goto(150,0)
+j.pendown()
+
+d=turtle.Turtle() #d为地球
+d.shape("circle")
+d.pencolor("green")
+d.color("green")
+d.speed(0)
+d.penup()
+d.goto(200,0)
+d.pendown()
+
+h=turtle.Turtle() #h为火星
+h.shape("circle")
+h.pencolor("pink")
+h.color("pink")
+h.speed(0)
+h.penup()
+h.goto(250,0)
+h.pendown()
+
+m=turtle.Turtle() #m为木星
+m.shape("circle")
+m.pencolor("orange")
+m.color("orange")
+m.speed(0)
+m.penup()
+m.goto(300,0)
+m.pendown()
+
+t=turtle.Turtle() #t为土星
+t.shape("circle")
+t.pencolor("purple")
+t.color("purple")
+t.speed(0)
+t.penup()
+t.goto(350,0)
+t.pendown()
+
+for i in range(1000):
+    s.goto(100*math.cos(math.radians(4*i)),50*math.sin(math.radians(4*i)))
+    j.goto(150*math.cos(math.radians(3*i)),75*math.sin(math.radians(3*i)))
+    d.goto(200*math.cos(math.radians(2.4*i)),100*math.sin(math.radians(2.4*i)))
+    h.goto(250*math.cos(math.radians(1.9*i)),125*math.sin(math.radians(1.9*i)))
+    m.goto(300*math.cos(math.radians(1.2*i)),150*math.sin(math.radians(1.2*i)))
+    t.goto(350*math.cos(math.radians(0.8*i)),175*math.sin(math.radians(0.8*i)))
