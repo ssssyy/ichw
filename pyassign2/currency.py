@@ -68,11 +68,11 @@ def after_space(s):#该函数能够将一个字符串中位于第一个空格之
     return subs2
 
 #Part D 这是最后要实现的exchange函数了！！！！！胜利就在眼前！！！！！！(前面的都只是铺垫，这才是主函数)
-def exchange(currency_from, currency_to, amount_from):
-    currency_from=input("输入原货币的三位英文缩写")#获取用户的输入
-    currency_to=input("输入要转换至的货币的三位英文缩写")
-    amount_from=input("输入需要转换的原货币的数量")
+currency_from=input("输入原货币的三位英文缩写")#获取用户的输入
+currency_to=input("输入要转换至的货币的三位英文缩写")
+amount_from=input("输入需要转换的原货币的数量")
     
+def exchange(currency_from, currency_to, amount_from):
     if currency_from not in list1:#检验输入的原始货币名称是否符合规范
         print('{ "from" : "", "to" : "", "success" : false, "error" : "Source currency code is invalid." }')
         sys.exit()#退出，不再执行剩下的程序
@@ -98,3 +98,40 @@ def exchange(currency_from, currency_to, amount_from):
 exchange(currency_from, currency_to, amount_from)
 
 #Part E 测试函数部分
+#接下来是测试函数部分，给定的参数为 USD CNY 4 可以测试以上出现的所有函数
+def test_currency_response():#对第一个函数的测试
+    assert(currency_response("USD", "CNY", "4")=='http://cs1110.cs.cornell.edu/2016fa/a1server.php?from=USD&to=CNY&amt=4')
+
+def test_get_json():#对第二个函数的测试
+    assert(get_json('http://cs1110.cs.cornell.edu/2016fa/a1server.php?from=USD&to=CNY&amt=4')=='{ "from" : "4 United States Dollars", "to" : "27.4084 Chinese Yuan", "success" : true, "error" : "" }')
+
+def test_first_inside_quotes():#对第三个函数的测试
+    assert(first_inside_quotes('{ "from" : "4 United States Dollars", "to" : "27.4084 Chinese Yuan", "success" : true, "error" : "" }')=='from')
+    
+def test_get_from():#对第四个函数的测试
+    assert(get_from('{ "from" : "4 United States Dollars", "to" : "27.4084 Chinese Yuan", "success" : true, "error" : "" }')=="4 United States Dollars")
+
+def test_get_to():#对第五个函数的测试
+    assert(get_to('{ "from" : "4 United States Dollars", "to" : "27.4084 Chinese Yuan", "success" : true, "error" : "" }')=="27.4084 Chinese Yuan")
+    
+def test_has_error():#对第六个函数的测试
+    assert(has_error('{ "from" : "4 United States Dollars", "to" : "27.4084 Chinese Yuan", "success" : true, "error" : "" }')==False)
+    
+def test_before_space():#对第七个函数的测试
+    assert(before_space("4 United States Dollars")=="4")
+    
+def test_after_space():#对第八个函数的测试
+    assert(after_space("4 United States Dollars")=="United States Dollars")
+    
+def test_all():
+    test_currency_response()
+    test_get_json()
+    test_first_inside_quotes()
+    test_get_from()
+    test_get_to()
+    test_has_error()
+    test_before_space()
+    test_after_space()
+    print("All tests passed!")
+    
+test_all()
