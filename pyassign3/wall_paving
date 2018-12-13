@@ -1,0 +1,233 @@
+"""
+注释理应写在最前：程序思路：以0代表未铺砖，1代表铺了，用一个二维的数组来作为map，每次按顺序检索为0的最小的点，先采用横着铺，判断铺砖是否合法，
+若合法，置1，并在另一个二维的数组中储存上这块砖占有的格子的序号。当检索发现map全为1时认为已经全部铺完，打印解法，并赋予一个True的flag。
+当铺通一种解法时，一步一步回溯并尝试竖着铺，直到回溯至最顶端（起始点），铺砖程序结束。最后判断若flag始终为初始值False，那么说明一种解法都没找出来，
+打印错误报告。
+
+可视化部分代码容易，就不写注释了……
+"""
+
+import sys   
+sys.setrecursionlimit(1000000)
+import tkinter.messagebox
+from tkinter import *
+tkinter.messagebox.showinfo("程序使用指南(写在最前面的注释)","0、这个消息提示框会弹出两个窗口，务必将两个都关闭，否则程序跑不了下一步。\n1、在输入框中输入墙的大小和砖的大小。\n2、在所有打印的方案中选一个你想要的方案，复制并粘贴包括最外层'[]'的部分至下一个输入框中。\n3、假如测试的数据不能铺出砖来，那么第一步结束后请手动终止，我没有设置这种情况下可视化该如何操作。\n4、如果您读完了前面四条，就该明白这个程序需要不少手动部分，且没有办法对任何Typeerror做出处理，还经常出bug，望谅解，我实在是能力有限，谢谢助教理解！")
+mainloop()
+
+
+#创建一个mxn的二维数组代表墙面
+list1=input("输入墙的边长a和b")
+list2=list1.split(" ")
+a=eval(list2[0])
+b=eval(list2[1])
+wall=[[0 for i in range(a)]for i in range(b)]
+
+list3=input("输入瓷砖的边长m和n")
+list4=list3.split(" ")
+m=eval(list4[0])
+n=eval(list4[1])
+
+
+def check_1(i,j):     #横向铺的检验函数
+    if j+m > a or i+n > b:      #越界情况判断
+        return False
+    else:
+        for k in range(0,n):      #判断即将铺砖的地方是否已经有了地砖
+            for l in range(0,m):
+                if wall[i+k][j+l] != 0:
+                    return False
+        return True
+
+def check_2(i,j):      #纵向铺的检验函数
+    if j+n > a or i+m > b:
+        return False
+    else:
+        for k in range(0,m):
+            for l in range(0,n):
+                if wall[i+k][j+l] != 0:
+                    return False
+        return True
+    
+dot=[0,0]
+no=0
+result=[]
+judge_=False    #用来判断是否能够找到至少一种铺砖的方法
+
+def solution():    #当铺的瓷砖是长方形的时候，用这个函数
+    global dot
+    global no
+    global judge_
+    flag=0
+    res=[]
+    for i in range(0,b):     #检索出最小的未铺的点
+        for j in range(0,a):
+            if wall[i][j] == 0:
+                dot=[i,j]
+                flag=1
+                break
+        if flag == 1:
+            break
+    if flag == 0:       #达到跳出循环条件，即铺完了所有的砖
+        no += 1        #达到输出条件就将计数器加一
+        print("方案"+str(no)+":")
+        print("[",end = "")
+        for c in range(len(result)-1):
+            print(result[c] , end = ",")     #单纯是为了将一个方案打印在一行中
+        print(result[-1], end = "")
+        print("]")
+        judge_=True
+        
+    else:      #铺砖过程开始啦！
+        i=dot[0]
+        j=dot[1]
+        if check_1(i,j):       #横向铺砖检验通过
+            for k in range(0,n):
+                for l in range(0,m):
+                    wall[i+k][j+l]=1
+                    xuhao=(i+k)*a+(j+l)
+                    res.append(xuhao)
+            result.append(res)
+            res=[]
+            solution()
+            for k in range(0,n):
+                for l in range(0,m):
+                    wall[i+k][j+l]=0
+            del result[-1]
+            
+            if check_2(i,j):        #纵向铺砖检验通过
+                for k in range (0,m):
+                    for l in range (0,n):
+                        wall[i+k][j+l]=1
+                        xuhao=(i+k)*a+(j+l)
+                        res.append(xuhao)
+                result.append(res)
+                res=[]
+                solution()
+                for k in range(0,m):
+                    for l in range(0,n):
+                        wall[i+k][j+l]=0
+                del result[-1]
+        
+        else:
+            if check_2(i,j):       #纵向铺砖检验通过
+                for k in range (0,m):
+                    for l in range (0,n):
+                        wall[i+k][j+l]=1
+                        xuhao=(i+k)*a+(j+l)
+                        res.append(xuhao)
+                result.append(res)
+                res=[]
+                solution()
+                for k in range(0,m):
+                    for l in range(0,n):
+                        wall[i+k][j+l]=0
+                del result[-1]
+
+def square_solution():       #当瓷砖为正方形时采用这个函数
+    if a%m == 0 and b%m == 0:
+        global dot
+        global no
+        flag=0
+        res=[]
+        for i in range(0,b):       #检索出最小的未铺的点
+            for j in range(0,a):
+                if wall[i][j] == 0:
+                    dot=[i,j]
+                    flag=1
+                    break
+            if flag == 1:
+                break
+        if flag == 0:       #达到跳出循环条件，即铺完了所有的砖
+            no += 1       #达到输出条件就将计数器加一
+            print("唯一的方案：")
+            print("[",end = "")
+            for c in range(len(result)-1):
+                print(result[c],end = ",")
+            print(result[-1],end = "")          #单纯是为了将一个方案打印在一行内
+            print("]")
+            
+        else:    #铺砖过程
+            i=dot[0]
+            j=dot[1]
+            if check_1(i,j):      #铺砖检验通过
+                for k in range(0,n):
+                    for l in range(0,m):
+                        wall[i+k][j+l]=1
+                        xuhao=(i+k)*b+(j+l)
+                        res.append(xuhao)
+                result.append(res)
+                res=[]
+                square_solution()
+                for k in range(0,n):
+                    for l in range(0,m):
+                        wall[i+k][j+l]=0
+    else:
+        print("但是，这组数据这怎么可能铺的出来！")               
+
+def main():
+    global judge
+    if m != n:   #判断是长正方形吗
+        solution()
+        if judge_ == False:
+            print("这怎么可能铺的出来！（皮这一下我很开心）")
+    else:
+        print("正方形瓷砖就只有一种铺法，挨着铺满不就行了！（皮这一下我很开心）")
+        square_solution()
+
+if __name__ == '__main__':#主函数！
+    main()
+    
+    
+
+#下面是可视化部分，烦请助教自行复制粘贴一下你想要的方案……我能力有限，实在是做不到导出导入了
+list1=eval(input("请复制粘贴一组你想要的数据"))
+step=0
+import turtle
+turtle.penup()
+turtle.speed(0)
+y1=-b//2
+y2=-b//2+20*(b-1)+1
+x1=-a//2
+x2=-a//2+20*(a-1)+1
+for y in range(y1,y2,20):
+    for x in range(x1,x2,20):
+        if step < 10:
+            turtle.goto(x+8,y+3)
+            turtle.write(step)
+        else:
+            turtle.goto(x+5,y+3)
+            turtle.write(step)
+        turtle.goto(x,y)
+        turtle.pendown()
+        turtle.forward(20)
+        turtle.left(90)
+        turtle.forward(20)
+        turtle.left(90)
+        turtle.forward(20)
+        turtle.left(90)
+        turtle.forward(20)
+        turtle.left(90)
+        turtle.penup()
+        step += 1
+
+colors=["LightSlateBlue","Blue","Cyan","Green","Yellow","Gold","IndianRed","HotPink","Magenta","Purple"]
+for f in range(0,len(list1)):
+    for g in range(0,m*n):
+        xu=list1[f][g]
+        x_=xu%a
+        y_=xu//a
+        turtle.goto(x1+20*x_,y1+20*y_)
+        turtle.pendown()
+        turtle.fillcolor(colors[f%10])
+        turtle.begin_fill()
+        turtle.forward(20)
+        turtle.left(90)
+        turtle.forward(20)
+        turtle.left(90)
+        turtle.forward(20)
+        turtle.left(90)
+        turtle.forward(20)
+        turtle.left(90)
+        turtle.end_fill()
+        turtle.penup()
+turtle.hideturtle()     
