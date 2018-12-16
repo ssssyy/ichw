@@ -9,10 +9,6 @@
 
 import sys   
 sys.setrecursionlimit(1000000)
-import tkinter.messagebox
-from tkinter import *
-tkinter.messagebox.showinfo("程序使用指南(写在最前面的注释)","0、这个消息提示框会弹出两个窗口，务必将两个都关闭，否则程序跑不了下一步。\n1、在输入框中输入墙的大小和砖的大小。\n2、在所有打印的方案中选一个你想要的方案，复制并粘贴包括最外层'[]'的部分至下一个输入框中。\n3、假如测试的数据不能铺出砖来，那么第一步结束后请手动终止，我没有设置这种情况下可视化该如何操作。\n4、如果您读完了前面四条，就该明白这个程序需要不少手动部分，且没有办法对任何Typeerror做出处理，还经常出bug，望谅解，我实在是能力有限，谢谢助教理解！")
-mainloop()
 
 
 #创建一个mxn的二维数组代表墙面
@@ -51,6 +47,7 @@ def check_2(i,j):      #纵向铺的检验函数
 dot=[0,0]
 no=0
 result=[]
+plan=[]
 judge_=False    #用来判断是否能够找到至少一种铺砖的方法
 
 def solution():    #当铺的瓷砖是长方形的时候，用这个函数
@@ -76,6 +73,10 @@ def solution():    #当铺的瓷砖是长方形的时候，用这个函数
         print(result[-1], end = "")
         print("]")
         judge_=True
+        result1=result.copy()
+        plan.append(result1)
+
+
         
     else:      #铺砖过程开始啦！
         i=dot[0]
@@ -129,6 +130,8 @@ def square_solution():       #当瓷砖为正方形时采用这个函数
         global no
         flag=0
         res=[]
+        global result
+        global plan
         for i in range(0,b):       #检索出最小的未铺的点
             for j in range(0,a):
                 if wall[i][j] == 0:
@@ -145,6 +148,7 @@ def square_solution():       #当瓷砖为正方形时采用这个函数
                 print(result[c],end = ",")
             print(result[-1],end = "")          #单纯是为了将一个方案打印在一行内
             print("]")
+            plan.append(result.copy())
             
         else:    #铺砖过程
             i=dot[0]
@@ -176,11 +180,12 @@ def main():
 
 if __name__ == '__main__':#主函数！
     main()
-    
-    
 
-#下面是可视化部分，烦请助教自行复制粘贴一下你想要的方案……我能力有限，实在是做不到导出导入了
-list1=eval(input("请复制粘贴一组你想要的数据"))
+    
+#下面是可视化部分
+index_=eval(input("请输入一个1至方案总数之间的整数"))
+list1=plan[index_-1]
+print(list1)
 step=0
 import turtle
 turtle.penup()
